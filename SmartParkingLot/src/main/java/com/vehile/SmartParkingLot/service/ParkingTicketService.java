@@ -52,30 +52,30 @@ public class ParkingTicketService {
         return parkingTicketRepo.findAll();
     }
 
-    public void addParkingTicketToSlot(Long parkingTicketId, Long parkingSlotId) {
-        parkingTicketRepo.findById(parkingTicketId).ifPresent(parkingTicket -> {
-            try {
-                parkingTicket.setParkingSlotId(parkingSlotId);
-            } catch (ParkingTicketNotFoundException e) {
-                throw new RuntimeException(e);
-            }
+    public void addParkingTicketToSlot(Long parkingTicketId, Long parkingSlotId) throws ParkingTicketNotFoundException {
+        Optional<ParkingTicket> optionalParkingTicket = parkingTicketRepo.findById(parkingTicketId);
+        if (optionalParkingTicket.isPresent()) {
+            ParkingTicket parkingTicket = optionalParkingTicket.get();
+            parkingTicket.setParkingSlotId(parkingSlotId);
             parkingTicketRepo.save(parkingTicket);
-        });
+        } else {
+            throw new RuntimeException("Parking Ticket not found with id: " + parkingTicketId);
+        }
     }
 
     public void addParkingTicketToExitPanel(Long parkingTicketId, Long exitPanelId) {
-        parkingTicketRepo.findById(parkingTicketId).ifPresent(parkingTicket -> {
+        Optional<ParkingTicket> optionalParkingTicket = parkingTicketRepo.findById(parkingTicketId);
+        if (optionalParkingTicket.isPresent()) {
+            ParkingTicket parkingTicket = optionalParkingTicket.get();
             parkingTicket.setExitPanelId(exitPanelId);
-
             parkingTicket.setExitTime(java.time.LocalDateTime.now());
             Duration duration = Duration.between(parkingTicket.getEntryTime(), parkingTicket.getExitTime());
-            VehicleType vehicleType = parkingTicket.getVehicle().getVehicleType();
-            VehicleParkingCharges vehicleParkingCharges = VehicleParkingCharges.valueOf(vehicleType.name());
-
-            parkingTicket.setParkingFee(vehicleParkingCharges.getCharge() * Math.ceil(duration.toHours()));
-
+            double fee = VehicleParkingCharges.calculateParkingFee(duration, parkingTicket.getVehicle().getVehicleType());
+            parkingTicket.setParkingFee(fee);
             parkingTicketRepo.save(parkingTicket);
-        });
+        } else {
+            throw new RuntimeException("Parking Ticket not found with id: " + parkingTicketId);
+        }
     }
 
     public void addParkingTicketToEntryPanel(Long parkingTicketId, Long entryPanelId) {
@@ -90,7 +90,7 @@ public class ParkingTicketService {
         Optional<ParkingTicket> optionalParkingTicket = parkingTicketRepo.findById(parkingTicketId);
         if (optionalParkingTicket.isPresent()) {
             ParkingTicket parkingTicket = optionalParkingTicket.get();
-            parkingTicket.getVehicle().setVehicle(vehicle);
+            parkingTicket.setVehicle(vehicle);
             parkingTicketRepo.save(parkingTicket);
         } else {
             throw new RuntimeException("Parking Ticket not found with id: " + parkingTicketId);

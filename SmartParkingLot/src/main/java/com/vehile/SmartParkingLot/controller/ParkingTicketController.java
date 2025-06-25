@@ -64,7 +64,7 @@ public class ParkingTicketController {
 
     @PostMapping("/MappingParkingTicketToVehicle")
     public void MappingParkingTicketToVehicle(@RequestParam("parkingTicketId") Long parkingTicketId,
-                                              @RequestParam Vehicle vehicle) throws ParkingTicketNotFoundException {
+                                              @RequestBody Vehicle vehicle) throws ParkingTicketNotFoundException {
         parkingTicketService.addParkingTicketToVehicle(parkingTicketId, vehicle);
     }
 

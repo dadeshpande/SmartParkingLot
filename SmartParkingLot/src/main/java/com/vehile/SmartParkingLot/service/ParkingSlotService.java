@@ -1,6 +1,7 @@
 package com.vehicle.smartparkinglot.service;
 
 
+import com.vehicle.smartparkinglot.DTO.ParkingSlotDTO;
 import com.vehicle.smartparkinglot.Exception.ParkingSlotNotFoundException;
 import com.vehicle.smartparkinglot.entity.ParkingFloor;
 import com.vehicle.smartparkinglot.entity.ParkingSlot;
@@ -49,12 +50,16 @@ public class ParkingSlotService {
         }
     }
 
-    public List<ParkingSlot> getAllParkingSlots() throws ParkingSlotNotFoundException {
+    public List<ParkingSlotDTO> getAllParkingSlots() throws ParkingSlotNotFoundException {
         List<ParkingSlot> parkingSlots = parkingSlotRepo.findAll();
         if (parkingSlots.isEmpty()) {
             throw new ParkingSlotNotFoundException("No Parking Slots found");
         }
-        return parkingSlots;
+        List<ParkingSlotDTO> parkingSlotDTOs = parkingSlots.stream()
+                .map(slot -> new ParkingSlotDTO(
+                        slot.getSlotId(),  slot.getSlotNumber(), slot.isAvailable(), slot.getParkingSlotType()))
+                .toList();
+        return parkingSlotDTOs;
     }
 
     public ParkingSlot assignParkingSlot(Vehicle vehicle, Long parkingSlotId) throws ParkingSlotNotFoundException {
@@ -70,7 +75,6 @@ public class ParkingSlotService {
         Optional<Vehicle> optionalVehicle = Optional.ofNullable(vehicle);
         vehicle = optionalVehicle.get();
         parkingSlot.setAvailable(false);
-        parkingSlot.setVehicleId(vehicle.getLicensePlate()); // Assuming vehicleId is set when slot is assigned
         return parkingSlotRepo.save(parkingSlot);
 
     }
@@ -82,17 +86,20 @@ public class ParkingSlotService {
         }
         ParkingSlot parkingSlot = optionalParkingSlot.get();
         parkingSlot.setAvailable(true);
-        parkingSlot.setVehicleId(""); // Assuming vehicleId is set to null when slot is released
         return parkingSlotRepo.save(parkingSlot);
     }
 
-    public List<ParkingSlot> getAvailableParkingSlots() throws ParkingSlotNotFoundException {
+    public List<ParkingSlotDTO> getAvailableParkingSlots() throws ParkingSlotNotFoundException {
         List<ParkingSlot> availableSlots = parkingSlotRepo.findAll().stream()
                 .filter(ParkingSlot::isAvailable)
                 .toList();
         if (availableSlots.isEmpty()) {
             throw new ParkingSlotNotFoundException("No available parking slots found");
         }
-        return availableSlots;
+        List<ParkingSlotDTO> availableSlotDTOs = availableSlots.stream()
+                .map(slot -> new ParkingSlotDTO(
+                        slot.getSlotId(), slot.getSlotNumber(), slot.isAvailable(), slot.getParkingSlotType()))
+                .toList();
+        return availableSlotDTOs;
     }
 }

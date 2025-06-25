@@ -1,4 +1,4 @@
-package com.vehile.SmartParkingLot;
+package com.vehicle.smartparkinglot;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -6,8 +6,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class SmartParkingLotApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(SmartParkingLotApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(SmartParkingLotApplication.class, args);
+    }
 
 }

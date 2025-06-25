@@ -2,6 +2,8 @@ package com.vehicle.smartparkinglot.service;
 
 
 import com.vehicle.smartparkinglot.Exception.ParkingLotNotFoundException;
+import com.vehicle.smartparkinglot.entity.EntryPanel;
+import com.vehicle.smartparkinglot.entity.ExitPanel;
 import com.vehicle.smartparkinglot.entity.ParkingFloor;
 import com.vehicle.smartparkinglot.entity.ParkingLot;
 import com.vehicle.smartparkinglot.repository.ParkingLotRepo;
@@ -52,23 +54,23 @@ public class ParkingLotService {
         return parkingLots;
     }
 
-    public void addEntryPanelToParkingLot(Long parkingLotId, List<Long> entryPanelIds) throws ParkingLotNotFoundException {
+    public void addEntryPanelToParkingLot(Long parkingLotId, EntryPanel entryPanel) throws ParkingLotNotFoundException {
         Optional<ParkingLot> optionalParkingLot = parkingLotRepo.findById(parkingLotId);
         if (optionalParkingLot.isEmpty()) {
             throw new ParkingLotNotFoundException("Parking Lot not found with ID : " + parkingLotId);
         }
         ParkingLot parkingLot = optionalParkingLot.get();
-        parkingLot.getEntryPanelIds().addAll(entryPanelIds);
+        parkingLot.getEntryPanels().add(entryPanel);
         parkingLotRepo.save(parkingLot);
     }
 
-    public void addExitPanelToParkingLot(Long parkingLotId, List<Long> exitPanelIds) throws ParkingLotNotFoundException {
+    public void addExitPanelToParkingLot(Long parkingLotId, ExitPanel exitPanel) throws ParkingLotNotFoundException {
         Optional<ParkingLot> optionalParkingLot = parkingLotRepo.findById(parkingLotId);
         if (optionalParkingLot.isEmpty()) {
             throw new ParkingLotNotFoundException("Parking Lot not found with ID : " + parkingLotId);
         }
         ParkingLot parkingLot = optionalParkingLot.get();
-        parkingLot.getExitPanelIds().addAll(exitPanelIds);
+        parkingLot.getExitPanels().add(exitPanel);
         parkingLotRepo.save(parkingLot);
     }
 

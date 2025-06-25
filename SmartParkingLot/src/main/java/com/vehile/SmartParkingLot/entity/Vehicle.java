@@ -13,12 +13,11 @@ public class Vehicle {
     @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
     private Long vehicleId;
 
-    @OneToOne
-    private ParkingTicket parkingTicket;
-
     private String ownerName;
     private VehicleType vehicleType;
     private String licensePlate;
+    @OneToOne(mappedBy = "vehicle", cascade = jakarta.persistence.CascadeType.ALL)
+    private ParkingTicket parkingTicket;
 
     public Vehicle() {
     }
@@ -43,14 +42,6 @@ public class Vehicle {
         this.vehicleId = vehicleId;
     }
 
-    public ParkingTicket getParkingTicket() {
-        return parkingTicket;
-    }
-
-    public void setParkingTicket(ParkingTicket parkingTicket) {
-        this.parkingTicket = parkingTicket;
-    }
-
     public String getOwnerName() {
         return ownerName;
     }
@@ -65,22 +56,6 @@ public class Vehicle {
 
     public void setVehicleType(VehicleType vehicleType) {
         this.vehicleType = vehicleType;
-    }
-
-    public void setParkingSlotId(Long parkingSlotId) throws ParkingTicketNotFoundException {
-        if (this.parkingTicket != null) {
-            this.parkingTicket.setParkingSlotId(parkingSlotId);
-        } else {
-            throw new ParkingTicketNotFoundException("Parking ticket is not set for this vehicle.");
-        }
-    }
-
-    public void setId(Long vehicleId) {
-        if (this.vehicleId == null) {
-            this.vehicleId = vehicleId;
-        } else {
-            throw new IllegalArgumentException("Vehicle ID is already set and cannot be changed.");
-        }
     }
 
     public void setVehicle(Vehicle vehicle) {

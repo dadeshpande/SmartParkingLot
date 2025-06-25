@@ -1,5 +1,6 @@
 package com.vehicle.smartparkinglot.entity;
 
+import com.vehicle.smartparkinglot.enums.ParkingSlotType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -14,7 +15,7 @@ public class ParkingSlot {
     private Long slotId;
     private String slotNumber;
     private boolean isAvailable;
-    private String vehicleLicensePlate;
+    private ParkingSlotType parkingSlotType;
 
     @ManyToOne
     private ParkingFloor parkingFloor;
@@ -22,9 +23,19 @@ public class ParkingSlot {
     public ParkingSlot() {
     }
 
-    public ParkingSlot(String slotNumber, boolean isAvailable) {
+    public ParkingSlot(String slotNumber, boolean isAvailable, ParkingFloor parkingFloor, ParkingSlotType parkingSlotType) {
         this.slotNumber = slotNumber;
         this.isAvailable = isAvailable;
+        this.parkingFloor = parkingFloor;
+        this.parkingSlotType = parkingSlotType;
+    }
+
+    public ParkingSlotType getParkingSlotType() {
+        return parkingSlotType;
+    }
+
+    public void setParkingSlotType(ParkingSlotType parkingSlotType) {
+        this.parkingSlotType = parkingSlotType;
     }
 
     public ParkingFloor getParkingFloor() {
@@ -51,28 +62,12 @@ public class ParkingSlot {
         this.slotNumber = slotNumber;
     }
 
-    public String getVehicleLicensePlate() {
-        return vehicleLicensePlate;
-    }
-
-    public void setVehicleLicensePlate(String vehicleLicensePlate) {
-        this.vehicleLicensePlate = vehicleLicensePlate;
-    }
-
     public Long getParkingSlotId() {
         return slotId;
     }
 
     public void setParkingSlotId(Long id) {
         this.slotId = id;
-    }
-
-    public void setVehicleId(Object o) {
-        if (o instanceof String) {
-            this.vehicleLicensePlate = (String) o; // Assuming vehicleId is a license plate string
-        } else {
-            throw new IllegalArgumentException("Vehicle ID must be a String representing the license plate");
-        }
     }
 
     public boolean isAvailable() {
@@ -88,5 +83,13 @@ public class ParkingSlot {
             this.parkingFloor = new ParkingFloor();
         }
         this.parkingFloor.setId(parkingFloorId); // Assuming ParkingFloor has a setId method
+    }
+
+    public void setVehicleId(Long vehicleId) {
+        if (this.parkingFloor == null) {
+            this.parkingFloor = new ParkingFloor();
+        }
+        // Assuming ParkingFloor has a method to set vehicleId
+        this.parkingFloor.setVehicleId(vehicleId); // This is a placeholder; adjust as necessary
     }
 }

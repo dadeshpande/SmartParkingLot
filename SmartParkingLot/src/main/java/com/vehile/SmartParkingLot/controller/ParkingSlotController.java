@@ -1,5 +1,6 @@
 package com.vehicle.smartparkinglot.controller;
 
+import com.vehicle.smartparkinglot.DTO.ParkingSlotDTO;
 import com.vehicle.smartparkinglot.Exception.ParkingSlotNotFoundException;
 import com.vehicle.smartparkinglot.entity.ParkingSlot;
 import com.vehicle.smartparkinglot.entity.Vehicle;
@@ -24,18 +25,22 @@ public class ParkingSlotController {
     }
 
     @GetMapping("/getParkingSlots")
-    public List<ParkingSlot> getParkingSlots(@RequestParam(required = false) Long id) throws ParkingSlotNotFoundException {
+    public List<ParkingSlotDTO> getParkingSlots(@RequestParam(required = false) Long id) throws ParkingSlotNotFoundException {
         if(id == null) {
             return parkingSlotService.getAllParkingSlots();
         }
-        List<ParkingSlot> parkingSlots = new ArrayList<>();
+        List<ParkingSlotDTO> parkingSlotDTOS = new ArrayList<>();
         Optional<ParkingSlot> optionalParkingSlot = Optional.ofNullable(parkingSlotService.findById(id));
         if (optionalParkingSlot.isPresent()) {
-             parkingSlots.add(optionalParkingSlot.get());
+            ParkingSlot parkingSlot = optionalParkingSlot.get();
+             parkingSlotDTOS.add(new ParkingSlotDTO(parkingSlot.getParkingSlotId(),
+                     parkingSlot.getSlotNumber(),
+                     parkingSlot.isAvailable(),
+                    parkingSlot.getParkingSlotType()));
         } else {
             throw new ParkingSlotNotFoundException("Parking Slot not found with id: " + id);
         }
-        return parkingSlots;
+        return parkingSlotDTOS;
     }
 
     @DeleteMapping("/deleteparkingSlot/{id}")
@@ -59,13 +64,9 @@ public class ParkingSlotController {
         return parkingSlotService.releaseParkingSlot(parkingSlotId);
     }
 
-    @PostMapping("/getAvailableParkingSlots")
-    public List<ParkingSlot> getAvailableParkingSlots() throws ParkingSlotNotFoundException {
-        List<ParkingSlot> availableSlots = parkingSlotService.getAvailableParkingSlots();
-        if (availableSlots.isEmpty()) {
-            throw new ParkingSlotNotFoundException("No available parking slots found");
-        }
-        return availableSlots;
+    @GetMapping("/getAvailableParkingSlots")
+    public List<ParkingSlotDTO> getAvailableParkingSlots() throws ParkingSlotNotFoundException {
+        return parkingSlotService.getAvailableParkingSlots();
     }
 
     @ExceptionHandler(ParkingSlotNotFoundException.class)

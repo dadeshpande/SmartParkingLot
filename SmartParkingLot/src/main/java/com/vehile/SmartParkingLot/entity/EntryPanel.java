@@ -53,4 +53,5 @@ public class EntryPanel {
     public void setId(Long entryPanelId) {
         this.entryPanelId = entryPanelId;
     }
+
 }

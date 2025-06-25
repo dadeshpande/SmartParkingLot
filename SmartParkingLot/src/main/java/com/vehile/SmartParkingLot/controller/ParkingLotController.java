@@ -2,9 +2,7 @@ package com.vehicle.smartparkinglot.controller;
 
 import com.vehicle.smartparkinglot.Exception.ParkingFloorNotFoundException;
 import com.vehicle.smartparkinglot.Exception.ParkingLotNotFoundException;
-import com.vehicle.smartparkinglot.entity.ParkingFloor;
-import com.vehicle.smartparkinglot.entity.ParkingLot;
-import com.vehicle.smartparkinglot.entity.ParkingSlot;
+import com.vehicle.smartparkinglot.entity.*;
 import com.vehicle.smartparkinglot.service.ParkingLotService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -53,16 +51,16 @@ public class ParkingLotController {
         return ResponseEntity.status(404).body(ex.getMessage());
     }
 
-    @PostMapping("/mappingParkingLot/{id}/EntryPanels")
+    @PostMapping("/mappingParkingLot/{parkingLotId}/EntryPanel")
     public void mappingEntryPanelToParkingLot(@PathVariable("parkingLotId") Long parkingLotId,
-                                              @RequestParam("entryPanelId") List<Long> entryPanelIds) throws ParkingLotNotFoundException {
-        parkingLotService.addEntryPanelToParkingLot(parkingLotId, entryPanelIds);
+                                              @RequestBody EntryPanel entryPanel) throws ParkingLotNotFoundException {
+        parkingLotService.addEntryPanelToParkingLot(parkingLotId, entryPanel);
     }
 
-    @PostMapping("/mappingExitPanelToParkingLot/{id}")
+    @PostMapping("/mappingParkingLot/{parkingLotId}/ToExitPanel")
     public void mappingExitPanelToParkingLot(@PathVariable("parkingLotId") Long parkingLotId,
-                                              @RequestParam("exitPanelIds") List<Long> exitPanelIds) throws ParkingLotNotFoundException {
-        parkingLotService.addExitPanelToParkingLot(parkingLotId, exitPanelIds);
+                                              @RequestBody ExitPanel exitPanel) throws ParkingLotNotFoundException {
+        parkingLotService.addExitPanelToParkingLot(parkingLotId, exitPanel);
     }
 
     @PostMapping("/mapParkingLot/{id}/parkingFloors")

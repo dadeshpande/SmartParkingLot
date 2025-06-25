@@ -93,4 +93,11 @@ public class ParkingFloor {
         }
         return null;
     }
+
+    public void setVehicleId(Long vehicleId) {
+        if (this.parkingLot == null) {
+            this.parkingLot = new ParkingLot();
+        }
+        this.parkingLot.setVehicleId(vehicleId); // Assuming ParkingLot has a setVehicleId method
+    }
 }

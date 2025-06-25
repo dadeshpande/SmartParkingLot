@@ -1,5 +1,7 @@
 package com.vehicle.smartparkinglot.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vehicle.smartparkinglot.Exception.ParkingTicketNotFoundException;
 import jakarta.persistence.*;
 
@@ -10,11 +12,18 @@ public class ParkingTicket {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long ticketId;
-
-    @OneToOne(mappedBy = "parkingTicket")
+    @OneToOne(cascade = CascadeType.ALL)
+    private ParkingSlot parkingSlot;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JsonIgnore
     private Vehicle vehicle;
 
+    @Version
+    private Integer version;
+
+    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss[.SSS][.SS][.S]")
     private LocalDateTime entryTime;
+    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss[.SSS][.SS][.S]")
     private LocalDateTime exitTime;
     private double parkingFee;
     @ManyToOne(cascade = CascadeType.ALL)
@@ -87,13 +96,6 @@ public class ParkingTicket {
         entryPanel.setId(entryPanelId);
     }
 
-    public void setParkingSlotId(Long parkingSlotId) throws ParkingTicketNotFoundException {
-        if (vehicle == null) {
-            vehicle = new Vehicle();
-        }
-        vehicle.setParkingSlotId(parkingSlotId);
-    }
-
     public void setExitPanelId(Long exitPanelId) {
         if (exitPanel == null) {
             exitPanel = new ExitPanel();
@@ -101,10 +103,10 @@ public class ParkingTicket {
         exitPanel.setId(exitPanelId);
     }
 
-    public void setVehicleId(Long vehicleId) {
-        if (vehicle == null) {
-            vehicle = new Vehicle();
+    public void setParkingSlotId(Long parkingSlotId) {
+        if (parkingSlot == null) {
+            parkingSlot = new ParkingSlot();
         }
-        vehicle.setId(vehicleId);
+        parkingSlot.setParkingSlotId(parkingSlotId);
     }
 }

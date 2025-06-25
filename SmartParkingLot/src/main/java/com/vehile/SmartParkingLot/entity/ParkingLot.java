@@ -88,16 +88,20 @@ public class ParkingLot {
         this.LotId = id;
     }
 
-
-    public List<Long> getExitPanelIds() {
-        return exitPanels.stream()
-                .map(ExitPanel::getExitPanelId)
-                .toList();
+    public List<ExitPanel> getExitPanels() {
+        return exitPanels;
     }
 
-    public List<Long> getEntryPanelIds() {
-        return entryPanels.stream()
-                .map(EntryPanel::getEntryPanelId)
-                .toList();
+    public List<EntryPanel> getEntryPanels() {
+        return entryPanels;
+    }
+
+    public void setVehicleId(Long vehicleId) {
+        if (this.entryPanels == null) {
+            this.entryPanels = List.of(new EntryPanel());
+        }
+        if (this.exitPanels == null) {
+            this.exitPanels = List.of(new ExitPanel());
+        }
     }
 }
